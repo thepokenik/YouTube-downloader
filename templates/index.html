@@ -6,10 +6,20 @@
   </head>
   <body>
     <h1>Download de Vídeo do YouTube</h1>
+    {%if video_url == ''%}
     <form method="POST">
       <label for="video_url">URL do Vídeo do YouTube:</label>
       <input type="text" name="video_url" required />
       <button type="submit">Baixar</button>
     </form>
+    {%endif%}
+      {%if video_url != ''%}
+      {%for resolution in resolutions%}
+      <form method="POST">
+      <label>{{resolution}}</label>
+      <button type="submit" name="download_resolution" value={{resolution}}>Baixar com esta resolução</button>
+      </form>
+      {%endfor%}
+      {%endif%}
   </body>
 </html>
