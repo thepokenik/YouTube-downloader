@@ -1,25 +1,36 @@
-from pytube import YouTube
+from flask import Blueprint, request, render_template, send_file, redirect
 import os
-from flask import Blueprint, request, render_template, send_file
+import yt_dlp
 
 views = Blueprint(__name__, "views")
 
+def get_video_info(video_url):
+    with yt_dlp.YoutubeDL() as ydl:
+        info = ydl.extract_info(video_url, download=False)
+        return info
+
+def filter_resolutions(resolutions, video_ext):
+    filtered_resolutions = []
+    for resolution in resolutions:
+        if resolution["video_ext"] == video_ext:
+            filtered_resolutions.append(resolution)
+    return filtered_resolutions
+
 @views.route("/", methods=["GET", "POST"])
 def index():
-    video_url = ''
+    video_url = ""
     resolutions = []
-    if request.method == "POST":
+    filtered_resolutions = []
+    if request.method == "POST" and 'select_video' in request.form:
         video_url = request.form["video_url"]
-        yt = YouTube(video_url)
-        resolutions = [stream.resolution for stream in yt.streams.filter(progressive=True)]
+        ydl = yt_dlp.YoutubeDL()
+        info = ydl.extract_info(video_url, download=False)
+        resolutions = info["formats"]
+        filtered_resolutions = filter_resolutions(resolutions, "mp4")
+        print(filtered_resolutions)
 
-    # if request.method == "POST" and 'download_resolution' in request.form:
-    #     yt = YouTube(video_url)
-    #     ys = yt.streams.filter(res=f"{resolution}").first()
-    #     if ys:
-    #         title = yt.title
-    #         file_path = f"{title}.mp4"
-    #         ys.download(filename=title)
-    #         return send_file(file_path, as_attachment=True)
-        
-    return render_template("index.html", resolutions=resolutions, video_url=video_url)
+    if request.method == "POST" and 'download_resolution' in request.form:
+        download_file = request.form.get("download_resolution")
+        return redirect(f"{download_file}")
+
+    return render_template("index.html", resolutions=filtered_resolutions, video_url=video_url)

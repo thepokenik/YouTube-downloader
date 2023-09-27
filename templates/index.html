@@ -2,7 +2,10 @@
 <html>
   <head>
     <title>Download de Vídeo do YouTube</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
   </head>
   <body>
     <h1>Download de Vídeo do YouTube</h1>
@@ -10,16 +13,25 @@
     <form method="POST">
       <label for="video_url">URL do Vídeo do YouTube:</label>
       <input type="text" name="video_url" required />
-      <button type="submit">Baixar</button>
+      <button type="submit" name="select_video">Baixar</button>
     </form>
-    {%endif%}
-      {%if video_url != ''%}
-      {%for resolution in resolutions%}
-      <form method="POST">
-      <label>{{resolution}}</label>
-      <button type="submit" name="download_resolution" value={{resolution}}>Baixar com esta resolução</button>
-      </form>
-      {%endfor%}
-      {%endif%}
+    {%endif%} {%if video_url != ''%} {%for resolution in resolutions%} {%if
+    resolution['audio_channels'] == 2%}
+    <h1>Video/Audio Format</h1>
+    <form method="POST">
+      <label>{{resolution['format_note']}}</label>
+      <button type="submit" name="download_resolution" value="{{resolution['url']}}">
+        Baixar com esta resolução
+      </button>
+    </form>
+    {%endif%} {%if resolution['audio_channels'] == None%}
+    <h1>Video/No Audio Format</h1>
+    <form method="POST">
+      <label>{{resolution['format_note']}}</label>
+      <button type="submit" name="download_resolution" value="{{resolution['url']}}">
+        Baixar com esta resolução
+      </button>
+    </form>
+    {%endif%} {%endfor%} {%endif%}
   </body>
 </html>
