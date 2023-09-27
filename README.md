@@ -1,18 +1,18 @@
 # YouTube Video Download Project with Flask
 
-This is a simple project that allows users to download YouTube videos by providing the desired video URL. The project is built using the Flask framework and the pytube library for video downloads.
+This is a simple project that allows users to download YouTube videos by providing the desired video URL. The project is built using the Flask framework and the yt-dlp library for video downloads.
 
 ## Prerequisites
 
 Before running this project, make sure you have Python and the following libraries installed:
 
 - Flask
-- pytube
+- yt-dlp
 
 You can install them using the following command:
 
 ```bash
-pip install Flask pytube
+pip install Flask yt-dlp
 ```
 
 ## How to Run
